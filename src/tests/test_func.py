@@ -2,7 +2,9 @@ import pytest
 
 
 def test_book_creation(test_library):
-
+    """
+    Тестирует создание книг в библиотеке и проверяет валидацию данных.
+    """
     test_library.create_book(title="test 1", author="author a", year="1111")
     test_library.create_book(title="test 2", author="author a", year="1112")
     test_library.create_book(title="test 3", author="author a", year="1113")
@@ -43,7 +45,9 @@ def test_book_creation(test_library):
 
 
 def test_get_all_books(test_library, get_check_data):
-
+    """
+    Тестирует получение всех книг из библиотеки.
+    """
     test_library.create_book(title="test 1", author="author a", year="1111")
     test_library.create_book(title="test 2", author="author a", year="1112")
     test_library.create_book(title="test 3", author="author a", year="1113")
@@ -63,6 +67,9 @@ def test_get_all_books(test_library, get_check_data):
 
 
 def test_get_book_by_param(test_library, get_check_data):
+    """
+    Тестирует поиск книг по параметрам (название, автор, год).
+    """
     check_title = "test 1"
     check_author = "author a"
     check_year = "1112"
@@ -93,16 +100,18 @@ def test_get_book_by_param(test_library, get_check_data):
     wrong_query_letters = "wrong"
     list_of_books = test_library.get_book_by_param(query=wrong_query_letters)
 
-    assert list_of_books == None
+    assert list_of_books is None
 
     wrong_query_digit = "1100"
     list_of_books = test_library.get_book_by_param(query=wrong_query_digit)
 
-    assert list_of_books == None
+    assert list_of_books is None
 
 
 def test_update_book_status(test_library, get_check_data):
-
+    """
+    Тестирует обновление статуса книги.
+    """
     new_status = "выдана"
     wrong_status = "wrong"
 
@@ -128,7 +137,9 @@ def test_update_book_status(test_library, get_check_data):
 
 
 def test_delete_book(test_library, get_check_data):
-
+    """
+    Тестирует удаление книги из библиотеки.
+    """
     test_library.create_book(
         title=get_check_data["title"],
         author=get_check_data["author"],
@@ -139,7 +150,7 @@ def test_delete_book(test_library, get_check_data):
     test_library.delete_book(book_id=id)
     list_of_books = test_library.get_book_by_param(query=id)
 
-    assert list_of_books == None
+    assert list_of_books is None
 
     with pytest.raises(FileNotFoundError):
         wrong_id = "wrong_id"

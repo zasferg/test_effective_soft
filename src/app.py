@@ -1,10 +1,14 @@
 from service.service import Library
 import argparse
 
+
 library = Library()
 
 
 def main():
+    """
+    Основная функция для управления библиотекой книг с использованием командной строки.
+    """
 
     parser = argparse.ArgumentParser(description="Управление библиотекой книг.")
     subparsers = parser.add_subparsers(dest="command")
@@ -42,22 +46,5 @@ def main():
         parser.print_help()
 
 
-
 if __name__ == "__main__":
     main()
-
-
-
-
-# Library Management Console Application
-
-# Описание
-
-# Это консольное приложение позволяет управлять библиотекой книг. Приложение поддерживает добавление, удаление, поиск и отображение книг, а также изменение статуса книги.
-
-## Установка
-
-# 1. Убедитесь, что у вас установлен Python 3.6 или выше.
-# 2. Установите необходимые зависимости:
-# ```sh
-#     pip install pydantic

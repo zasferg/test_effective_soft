@@ -1,7 +1,7 @@
 import json
 import re
 from time import sleep
-from typing import List, Optional, Union
+from typing import List, Optional
 import uuid
 from enums import BookStatus
 from settings import DATA_FILE
@@ -9,6 +9,10 @@ import os
 
 
 class Book:
+    """
+    Класс, представляющий книгу в библиотеке
+    """
+
     def __init__(
         self,
     ):
@@ -28,6 +32,10 @@ class Book:
 
     @title.setter
     def title(self, title: str):
+        """
+        Инициализация названия книги с валидацией.
+        """
+
         if not title:
             raise ValueError("Поле 'Название' не может быть пустым")
         if not isinstance(title, str):
@@ -42,6 +50,10 @@ class Book:
 
     @author.setter
     def author(self, author: str):
+        """
+        Инициализация автора книги с валидацией.
+        """
+
         if not author:
             raise ValueError("Поле 'автор' не может быть пустым.")
         if not isinstance(author, str):
@@ -56,6 +68,9 @@ class Book:
 
     @year.setter
     def year(self, year: int):
+        """
+        Инициализация года книги с валидацией.
+        """
         if not year:
             raise ValueError("Поле 'год' не может быть пустым.")
         if not isinstance(year, int):
@@ -70,6 +85,9 @@ class Book:
 
     @status.setter
     def status(self, status: BookStatus):
+        """
+        Инициализация статуса книги с валидацией.
+        """
         if not isinstance(status, BookStatus):
             raise ValueError(
                 f"Недопустимый статус: {status}. Допустимые значения: {[status.value for status in BookStatus]}"
@@ -77,6 +95,9 @@ class Book:
         self._status = status
 
     def to_dict(self):
+        """
+        Преобразование объекта книги в словарь.
+        """
         return {
             "id": self.id,
             "title": self.title,
@@ -87,25 +108,35 @@ class Book:
 
     @classmethod
     def from_dict(cls, data):
-
+        """
+        Создание объекта книги из словаря.
+        """
         book = cls()
         book._id = data.get("id", str(uuid.uuid4()))
         book.title = data["title"]
         book.author = data["author"]
         book.year = int(data["year"]) if data["year"].isdigit() else Exception
         book.status = BookStatus(data["status"])
-        
+
         return book
 
 
-
 class Library:
+    """
+    Класс библиотеки для работы с обьектами книг.
+    """
 
     def __init__(self, data_file: str = DATA_FILE):
+        """
+        Инициализация библиотеки с загрузкой данных из файла.
+        """
         self.data_file = data_file
         self.books = self.load_data()
 
     def load_data(self) -> List[Book]:
+        """
+        Загружает данные о книгах из файла.
+        """
         try:
             if not os.path.exists(self.data_file):
                 print(f"Файл {self.data_file} не найден, создается новый файл.")
@@ -117,14 +148,24 @@ class Library:
             print(f"Ошибка чтения файла {self.data_file}.")
             return []
 
-    def save_data(self)-> None:
+    def save_data(self) -> None:
+        """
+        Сохраняет данные о книгах в файл.
+        """
         try:
             with open(self.data_file, "w") as file:
                 json.dump([book.to_dict() for book in self.books], file, indent=4)
         except Exception as e:
             raise e
 
-    def create_book(self, title: str, author: str, year: str):
+    def create_book(self, title: str, author: str, year: str) -> None:
+        """
+        Создает новую книгу и добавляет её в библиотеку.
+
+        :param title: Название книги
+        :param author: Автор книги
+        :param year: Год издания книги
+        """
         try:
             if self.get_book_by_param(query=title):
                 raise FileExistsError("Данная книга уже в библиотеке")
@@ -138,8 +179,12 @@ class Library:
         except FileExistsError as e:
             raise e
 
-
     def delete_book(self, book_id: str):
+        """
+        Удаляет книгу из библиотеки по её ID.
+
+        :param book_id: ID книги
+        """
         try:
             if not self.get_book_by_param(query=book_id):
                 raise FileNotFoundError(f"Книга с id {book_id} не найдена")
@@ -151,9 +196,16 @@ class Library:
         except Exception as e:
             raise e
 
-    def get_book_by_param(self, query: str = None) -> Optional[List[Book]]:
+    def get_book_by_param(
+        self, query: str = None, results=None
+    ) -> Optional[List[Book]]:
+        """
+        Ищет книги по заданному параметру (название, автор, год или ID).
+
+        :param query: Параметр для поиска
+        :return: Список найденных книг
+        """
         try:
-            results = []
             if query.isdigit():
                 results = [book for book in self.books if query == book.year]
             elif isinstance(query, str):
@@ -179,6 +231,9 @@ class Library:
             raise ("Невалидные данные")
 
     def get_all_books(self):
+        """
+        Возвращает список всех книг в библиотеке.
+        """
         try:
             if not self.books:
                 raise FileNotFoundError("Библиотека пуста.")
@@ -194,6 +249,12 @@ class Library:
             raise e
 
     def update_status(self, book_id: str, new_status: str):
+        """
+        Обновляет статус книги по её ID.
+
+        :param book_id: ID книги
+        :param new_status: Новый статус книги
+        """
         try:
             if not self.get_book_by_param(book_id):
                 raise FileNotFoundError(f'Книга с id "{book_id}" не найдена.')
