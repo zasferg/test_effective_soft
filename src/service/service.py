@@ -107,7 +107,7 @@ class Book:
         }
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict):
         """
         Создание объекта книги из словаря.
         """
@@ -230,7 +230,7 @@ class Library:
         except AttributeError as e:
             raise ("Невалидные данные")
 
-    def get_all_books(self):
+    def get_all_books(self)-> Optional[List[Book]]:
         """
         Возвращает список всех книг в библиотеке.
         """
@@ -248,7 +248,7 @@ class Library:
         except Exception as e:
             raise e
 
-    def update_status(self, book_id: str, new_status: str):
+    def update_status(self, book_id: str, new_status: str) -> None:
         """
         Обновляет статус книги по её ID.
 
