@@ -62,6 +62,6 @@ Library Management System
 
     Пример:
 
-    python main.py us --id "12345" --status "checked_out"
+    python main.py us --id "12345" --status "выдана"
 
 
